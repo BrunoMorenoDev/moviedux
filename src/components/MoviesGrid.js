@@ -28,15 +28,49 @@ export const MoviesGrid = () => {
         setRating(e.target.value)
     }
 
-    //ma;ana revisar
-    const generoComun = (movies, genre) => {
-        return genre === "All Genres" || movies.genre.toLowerCase() === genre.toLowerCase();
+    const filtroRating = (movie, rating) => {
+        if (rating === "All") {
+            return true;
+        }
+        switch (rating) {
+            case "Good":
+                if (movie.rating >= 8) {
+                    return true
+                }
+
+                break;
+            case "Ok":
+                if (movie.rating >= 5) {
+                    return true;
+                }
+                break;
+            case "Bad":
+                if (movie.rating < 5) {
+                    return true;
+                }
+                break;
+            default:
+                break;
+        }
+
     }
+
+    //ma;ana revisar
+    const matchesGenre = (movie, genre) => {
+        return genre === "All Genres" || movie.genre.toLowerCase() === genre.toLowerCase();
+    }
+
+    const matchesSearchTerm = (movie, searchTerm) => {
+        return movie.title.toLowerCase().includes(searchTerm.toLowerCase());
+    };
+
 
     //Este es un array .filter almacena un nuevo array unicamente si cumple con la condicion del return
     const filtredMovies = movies.filter(movie => {
         //si la pelicula en minusculas incluye lo que busca el usuario en el input modifica y crea el nuevo array
-        return movie.title.toLowerCase().includes(searchTerm.toLowerCase())
+        return matchesSearchTerm(movie, searchTerm) && matchesGenre(movie, genre) && filtroRating(movie, rating)
+
+        // return movie.title.toLowerCase().includes(searchTerm.toLowerCase())
     })
 
     useEffect(() => {
@@ -62,7 +96,7 @@ export const MoviesGrid = () => {
             <div className="filter-bar">
                 <div className="filter-slot">
                     <label>Genre</label>
-                    <select className="filter-dropdown" onChange={obtenerValueGenero}>
+                    <select className="filter-dropdown" onChange={obtenerValueGenero} value={genre}>
                         <option>All Genres</option>
                         <option>Drama</option>
                         <option>Action</option>
