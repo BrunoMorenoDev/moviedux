@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import '../styles.css'
 import { MovieCard } from "../components/MovieCard";
+import { Watchlist } from "./Watchlist";
 
-export const MoviesGrid = () => {
+export const MoviesGrid = ({movies, watchlist, controlarWatchlist}) => {
 
-    //Es el estado para definir el array de las peliculas
-    const [movies, setMovies] = useState([]);
 
     //Es el estado para definir la busqueda del usuario en el input
     const [searchTerm, setSearchTerm] = useState("");
@@ -28,29 +27,52 @@ export const MoviesGrid = () => {
         setRating(e.target.value)
     }
 
-    //ma;ana revisar
-    const generoComun = (movies, genre) => {
-        return genre === "All Genres" || movies.genre.toLowerCase() === genre.toLowerCase();
+    const filtroRating = (movie, rating) => {
+        if (rating === "All") {
+            return true;
+        }
+        switch (rating) {
+            case "Good":
+                if (movie.rating >= 8) {
+                    return true
+                }
+
+                break;
+            case "Ok":
+                if (movie.rating >= 5) {
+                    return true;
+                }
+                break;
+            case "Bad":
+                if (movie.rating < 5) {
+                    return true;
+                }
+                break;
+            default:
+                break;
+        }
+
     }
+
+    //ma;ana revisar
+    const matchesGenre = (movie, genre) => {
+        return genre === "All Genres" || movie.genre.toLowerCase() === genre.toLowerCase();
+    }
+
+    const matchesSearchTerm = (movie, searchTerm) => {
+        return movie.title.toLowerCase().includes(searchTerm.toLowerCase());
+    };
+
 
     //Este es un array .filter almacena un nuevo array unicamente si cumple con la condicion del return
     const filtredMovies = movies.filter(movie => {
         //si la pelicula en minusculas incluye lo que busca el usuario en el input modifica y crea el nuevo array
-        return movie.title.toLowerCase().includes(searchTerm.toLowerCase())
+        return matchesSearchTerm(movie, searchTerm) && matchesGenre(movie, genre) && filtroRating(movie, rating)
+
+        // return movie.title.toLowerCase().includes(searchTerm.toLowerCase())
     })
 
-    useEffect(() => {
-        getMoviesJSON();
-    }, []);
-
-
-    const getMoviesJSON = () => {
-        fetch("movies.json")
-            .then(respuesta => respuesta.json())
-            .then(datos => {
-                setMovies(datos)
-            })
-    }
+    
 
 
 
@@ -62,7 +84,7 @@ export const MoviesGrid = () => {
             <div className="filter-bar">
                 <div className="filter-slot">
                     <label>Genre</label>
-                    <select className="filter-dropdown" onChange={obtenerValueGenero}>
+                    <select className="filter-dropdown" onChange={obtenerValueGenero} value={genre}>
                         <option>All Genres</option>
                         <option>Drama</option>
                         <option>Action</option>
@@ -85,7 +107,10 @@ export const MoviesGrid = () => {
                     //ponemos filtredMovies para poder manejar el buscador de peliculas
                     filtredMovies.map((movie) => {
                         return (
-                            <MovieCard movie={movie} key={movie.id} />
+                            <MovieCard movie={movie} 
+                            key={movie.id} 
+                            controlarWatchlist={controlarWatchlist}
+                            isWatchlisted={watchlist.includes(movie.id)}/>
                         )
                     })
                 }
