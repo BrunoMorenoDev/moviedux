@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import '../styles.css'
 import { MovieCard } from "../components/MovieCard";
+import { Watchlist } from "./Watchlist";
 
-export const MoviesGrid = () => {
+export const MoviesGrid = ({movies, watchlist, controlarWatchlist}) => {
 
-    //Es el estado para definir el array de las peliculas
-    const [movies, setMovies] = useState([]);
 
     //Es el estado para definir la busqueda del usuario en el input
     const [searchTerm, setSearchTerm] = useState("");
@@ -73,18 +72,7 @@ export const MoviesGrid = () => {
         // return movie.title.toLowerCase().includes(searchTerm.toLowerCase())
     })
 
-    useEffect(() => {
-        getMoviesJSON();
-    }, []);
-
-
-    const getMoviesJSON = () => {
-        fetch("movies.json")
-            .then(respuesta => respuesta.json())
-            .then(datos => {
-                setMovies(datos)
-            })
-    }
+    
 
 
 
@@ -119,7 +107,10 @@ export const MoviesGrid = () => {
                     //ponemos filtredMovies para poder manejar el buscador de peliculas
                     filtredMovies.map((movie) => {
                         return (
-                            <MovieCard movie={movie} key={movie.id} />
+                            <MovieCard movie={movie} 
+                            key={movie.id} 
+                            controlarWatchlist={controlarWatchlist}
+                            isWatchlisted={watchlist.includes(movie.id)}/>
                         )
                     })
                 }
