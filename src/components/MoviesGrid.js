@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import '../styles.css'
 import { MovieCard } from "../components/MovieCard";
-import { Watchlist } from "./Watchlist";
 
 export const MoviesGrid = ({movies, watchlist, controlarWatchlist}) => {
 
