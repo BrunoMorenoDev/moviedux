@@ -9,7 +9,7 @@ export const Watchlist = ({ movies, watchlist, controlarWatchlist }) => {
       <div className='watchlist'>
         {
           watchlist.map(id => {
-            const movie = movies.find(movie => movie.id == id );
+            const movie = movies.find(movie => movie.id === id );
             return <MovieCard key={id} movie={movie} controlarWatchlist={controlarWatchlist} isWatchlisted={true}/>
           })
         }
