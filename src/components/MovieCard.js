@@ -39,6 +39,7 @@ export const MovieCard = ({ movie, controlarWatchlist, isWatchlisted }) => {
                 </label>
 
             </div>
+            
         </div>
     )
 }
